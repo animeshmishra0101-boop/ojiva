@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ojiva Emergency Profile</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box }
+    body { font-family:'Segoe UI',sans-serif; background:#fff; padding:1.5rem }
+    .header { background:#EF4444; color:white; padding:1rem 1.5rem; border-radius:12px; margin-bottom:1.5rem; text-align:center }
+    .header h1 { font-size:1.1rem; font-weight:800; letter-spacing:0.05em }
+    .card { border:1px solid #E8E8F0; border-radius:12px; padding:1.25rem; margin-bottom:1rem }
+    .label { font-size:0.7rem; font-weight:700; text-transform:uppercase; color:#888; margin-bottom:4px }
+    .value { font-size:1rem; font-weight:700; color:#1A1A2E }
+    .blood { font-size:2.5rem; font-weight:800; color:#EF4444 }
+    .tag { display:inline-block; background:#FEE2E2; color:#9B1C1C; border:1px solid #FECACA; padding:3px 11px; border-radius:20px; font-size:0.78rem; font-weight:700; margin:3px }
+    .cond-tag { display:inline-block; background:#FFF3E0; color:#92400E; border:1px solid #FDE68A; padding:3px 11px; border-radius:20px; font-size:0.78rem; margin:3px }
+    .call-btn { display:block; width:100%; padding:14px; background:#22C55E; color:white; border:none; border-radius:12px; font-size:1rem; font-weight:700; text-align:center; text-decoration:none; margin-top:1rem }
+    .powered { text-align:center; font-size:0.75rem; color:#888; margin-top:1.5rem }
+    .powered span { color:#3F5EFB; font-weight:700 }
+    .row { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🚨 EMERGENCY MEDICAL PROFILE 🚨</h1>
+    <p style="font-size:0.8rem;opacity:0.9;margin-top:4px">For first responders — Scan by Ojiva</p>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="label">Patient Name</div>
+        <div class="value" id="p-name">—</div>
+      </div>
+      <div>
+        <div class="label">Blood Type</div>
+        <div class="blood" id="p-blood">—</div>
+      </div>
+    </div>
+    <div>
+      <div class="label">⚠️ Allergies</div>
+      <div id="p-allergies" style="margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label" style="margin-bottom:8px">💊 Current Medications</div>
+    <div id="p-meds"></div>
+  </div>
+
+  <div class="card">
+    <div class="label">🆘 Emergency Contact</div>
+    <div class="value" style="margin-top:6px" id="p-ec-name">—</div>
+    <a id="p-ec-call" href="#" class="call-btn">📞 Call Emergency Contact</a>
+  </div>
+
+  <div class="powered">Powered by <span>Ojiva</span> — cause our people matter.</div>
+
+<script>
+  // Read URL parameters
+  const params = new URLSearchParams(window.location.search)
+
+  const name     = params.get('name')     || 'Unknown Patient'
+  const blood    = params.get('blood')    || 'Unknown'
+  const allergies = params.get('allergies') || 'None'
+  const meds     = params.get('meds')     || 'None'
+  const ecName   = params.get('ecName')   || 'Not provided'
+  const ecPhone  = params.get('ecPhone')  || ''
+
+  document.getElementById('p-name').textContent = name
+  document.getElementById('p-blood').textContent = blood
+
+  // Allergies
+  const allergyList = allergies.split(',').filter(a => a && a !== 'None')
+  document.getElementById('p-allergies').innerHTML = allergyList.length
+    ? allergyList.map(a => `<span class="tag">⚠️ ${a}</span>`).join('')
+    : '<span style="color:#888;font-size:0.85rem">None on record</span>'
+
+  // Medications
+  const medList = meds.split(',').filter(m => m && m !== 'None')
+  document.getElementById('p-meds').innerHTML = medList.length
+    ? medList.map(m => `<div style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-weight:600">💊 ${m}</div>`).join('')
+    : '<span style="color:#888;font-size:0.85rem">None on record</span>'
+
+  // Emergency contact
+  document.getElementById('p-ec-name').textContent = ecName
+  if(ecPhone) {
+    document.getElementById('p-ec-call').href = `tel:${ecPhone}`
+    document.getElementById('p-ec-call').textContent = `📞 Call ${ecName} — ${ecPhone}`
+  } else {
+    document.getElementById('p-ec-call').style.display = 'none'
+  }
+</script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ojiva — cause our people matter.</title>
@@ -750,26 +751,21 @@ function renderEmergency() {
 }
 
 function drawQR() {
-  const canvas = document.getElementById('qr-canvas');
-  const ctx = canvas.getContext('2d');
-  const size = 180;
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
-  const data = `OJIVA|${profile.name||'?'}|${profile.blood||'?'}|${profile.allergies.join(',')||'None'}|${profile.ecPhone||''}`;
-  const hash = [...data].reduce((h,c)=>(Math.imul(31,h)+c.charCodeAt(0))|0,0);
-  const rand = i => ((hash*(i+1)*2654435761)>>>0)%2===0;
-  const cell = Math.floor((size-20)/21); const off = 10;
-  ctx.fillStyle = '#0D0D0D';
-  for(let r=0;r<21;r++) for(let c=0;c<21;c++) {
-    const isCorner=(r<7&&c<7)||(r<7&&c>13)||(r>13&&c<7);
-    const isInner=(r>=1&&r<=5&&c>=1&&c<=5)||(r>=1&&r<=5&&c>=15&&c<=19)||(r>=15&&r<=19&&c>=1&&c<=5);
-    const isCore=(r>=2&&r<=4&&c>=2&&c<=4)||(r>=2&&r<=4&&c>=16&&c<=18)||(r>=16&&r<=18&&c>=2&&c<=4);
-    let fill=false;
-    if(isCorner) fill=true; if(isInner) fill=false; if(isCore) fill=true;
-    if(!isCorner&&rand(r*21+c)) fill=true;
-    if(fill) ctx.fillRect(off+c*cell, off+r*cell, cell-1, cell-1);
-  }
-  ctx.fillStyle='#3F5EFB'; ctx.font='bold 8px system-ui'; ctx.textAlign='center';
-  ctx.fillText('OJIVA EMERGENCY', size/2, size-3);
+  const canvas = document.getElementById('qr-canvas')
+  
+  // The URL that opens when scanned
+ const emergencyURL = `https://ojaaa-367b0.firebaseapp.com/emergency-view.html?name=${encodeURIComponent(profile.name || '')}&blood=${encodeURIComponent(profile.blood || '')}&allergies=${encodeURIComponent(profile.allergies.join(',') || 'None')}&meds=${encodeURIComponent(medications.map(m=>m.name).join(',') || 'None')}&ecName=${encodeURIComponent(profile.ecName || '')}&ecPhone=${encodeURIComponent(profile.ecPhone || '')}`
+
+  QRCode.toCanvas(canvas, emergencyURL, {
+    width: 180,
+    margin: 1,
+    color: {
+      dark: '#0D0D0D',
+      light: '#FFFFFF'
+    }
+  }, function(error) {
+    if (error) console.error(error)
+  })
 }
 
 function printCard() {
