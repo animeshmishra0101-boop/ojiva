@@ -751,20 +751,27 @@ function renderEmergency() {
 }
 
 function drawQR() {
-  const canvas = document.getElementById('qr-canvas')
+  // clear old QR
+  const old = document.getElementById('qr-canvas')
+  const parent = old.parentNode
+  parent.removeChild(old)
   
-  // The URL that opens when scanned
- const emergencyURL = `https://ojaaa-367b0.firebaseapp.com/emergency-view.html?name=${encodeURIComponent(profile.name || '')}&blood=${encodeURIComponent(profile.blood || '')}&allergies=${encodeURIComponent(profile.allergies.join(',') || 'None')}&meds=${encodeURIComponent(medications.map(m=>m.name).join(',') || 'None')}&ecName=${encodeURIComponent(profile.ecName || '')}&ecPhone=${encodeURIComponent(profile.ecPhone || '')}`
+  // create new div for QR
+  const div = document.createElement('div')
+  div.id = 'qr-canvas'
+  div.style.display = 'flex'
+  div.style.justifyContent = 'center'
+  parent.appendChild(div)
 
-  QRCode.toCanvas(canvas, emergencyURL, {
+  const emergencyURL = `https://ojaaa-367b0.firebaseapp.com/emergency-view.html?name=${encodeURIComponent(profile.name||'Unknown')}&blood=${encodeURIComponent(profile.blood||'?')}&allergies=${encodeURIComponent((profile.allergies||[]).join(','))}&meds=${encodeURIComponent((medications||[]).map(m=>m.name).join(','))}&ecName=${encodeURIComponent(profile.ecName||'')}&ecPhone=${encodeURIComponent(profile.ecPhone||'')}`
+
+  new QRCode(div, {
+    text: emergencyURL,
     width: 180,
-    margin: 1,
-    color: {
-      dark: '#0D0D0D',
-      light: '#FFFFFF'
-    }
-  }, function(error) {
-    if (error) console.error(error)
+    height: 180,
+    colorDark: '#0D0D0D',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.H
   })
 }
 
