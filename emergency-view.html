@@ -1,98 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ojiva Emergency Profile</title>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box }
-    body { font-family:'Segoe UI',sans-serif; background:#fff; padding:1.5rem }
-    .header { background:#EF4444; color:white; padding:1rem 1.5rem; border-radius:12px; margin-bottom:1.5rem; text-align:center }
-    .header h1 { font-size:1.1rem; font-weight:800; letter-spacing:0.05em }
-    .card { border:1px solid #E8E8F0; border-radius:12px; padding:1.25rem; margin-bottom:1rem }
-    .label { font-size:0.7rem; font-weight:700; text-transform:uppercase; color:#888; margin-bottom:4px }
-    .value { font-size:1rem; font-weight:700; color:#1A1A2E }
-    .blood { font-size:2.5rem; font-weight:800; color:#EF4444 }
-    .tag { display:inline-block; background:#FEE2E2; color:#9B1C1C; border:1px solid #FECACA; padding:3px 11px; border-radius:20px; font-size:0.78rem; font-weight:700; margin:3px }
-    .cond-tag { display:inline-block; background:#FFF3E0; color:#92400E; border:1px solid #FDE68A; padding:3px 11px; border-radius:20px; font-size:0.78rem; margin:3px }
-    .call-btn { display:block; width:100%; padding:14px; background:#22C55E; color:white; border:none; border-radius:12px; font-size:1rem; font-weight:700; text-align:center; text-decoration:none; margin-top:1rem }
-    .powered { text-align:center; font-size:0.75rem; color:#888; margin-top:1.5rem }
-    .powered span { color:#3F5EFB; font-weight:700 }
-    .row { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Medical Info — Ojiva</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --purple:#3F5EFB;
+  --pink:#FC466B;
+  --dark:#0D0D0D;
+  --white:#FFFFFF;
+  --off:#F7F7FA;
+  --border:#E8E8F0;
+  --text:#1A1A2E;
+  --muted:#888;
+  --red:#EF4444;
+  --grad:linear-gradient(135deg,#3F5EFB 0%,#FC466B 100%);
+  --r:12px;
+  --r-sm:8px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+
+.topbar{background:var(--red);color:var(--white);text-align:center;padding:10px 1rem;font-weight:800;font-size:0.9rem;letter-spacing:0.03em}
+
+.wrap{max-width:560px;margin:0 auto;padding:1.25rem 1rem 2.5rem}
+
+.brand{display:flex;align-items:center;justify-content:center;gap:6px;margin:0.75rem 0 1.25rem;font-size:0.8rem;color:var(--muted);font-weight:600}
+.brand b{color:var(--purple);font-weight:800}
+
+.hero{
+  background:var(--grad);border-radius:var(--r);padding:1.5rem;
+  color:var(--white);margin-bottom:1rem;position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.08)}
+.hero-row{display:flex;align-items:center;gap:1rem;position:relative;z-index:1}
+.hero-avatar{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;flex-shrink:0}
+.hero-name{font-size:1.25rem;font-weight:700}
+.hero-sub{font-size:0.8rem;opacity:0.85;margin-top:2px}
+.hero-blood{background:rgba(0,0,0,0.25);border:2px solid rgba(255,255,255,0.5);color:var(--white);font-size:1.3rem;font-weight:800;padding:6px 14px;border-radius:10px;margin-left:auto;text-align:center;line-height:1.1}
+.hero-blood small{display:block;font-size:0.55rem;font-weight:700;opacity:0.85;letter-spacing:0.05em}
+
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1.1rem;margin-bottom:0.9rem}
+.card.alert{border:2px solid var(--red);background:#FEF2F2}
+.card-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:0.7rem;display:flex;align-items:center;gap:6px}
+.card.alert .card-label{color:#9B1C1C}
+
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.82rem;font-weight:700;margin:3px 3px 0 0}
+.tag-allergy{background:#FEE2E2;color:#9B1C1C;border:1px solid #FECACA}
+.tag-cond{background:#FFF3E0;color:#92400E;border:1px solid #FDE68A}
+.none{color:var(--muted);font-size:0.85rem}
+
+.med-item{padding:9px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px}
+.med-item:last-child{border-bottom:none}
+.med-name{font-weight:700;font-size:0.92rem}
+.med-dose{font-size:0.78rem;color:var(--muted)}
+
+.contact-row{display:flex;align-items:center;gap:12px}
+.contact-icon{width:42px;height:42px;border-radius:10px;background:#EEF0FF;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.contact-name{font-weight:700;font-size:0.95rem}
+.contact-rel{font-size:0.78rem;color:var(--muted)}
+.call-btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:var(--white);text-decoration:none;font-weight:700;font-size:0.9rem;padding:8px 14px;border-radius:var(--r-sm);margin-top:6px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem}
+.mini-label{font-size:0.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
+.mini-val{font-weight:700;font-size:0.95rem;margin-top:2px}
+
+.footer-note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:1.5rem;line-height:1.5}
+
+@media(max-width:400px){
+  .grid2{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>🚨 EMERGENCY MEDICAL PROFILE 🚨</h1>
-    <p style="font-size:0.8rem;opacity:0.9;margin-top:4px">For first responders — Scan by Ojiva</p>
-  </div>
+<div class="topbar">🚨 EMERGENCY MEDICAL INFORMATION</div>
 
-  <div class="card">
-    <div class="row">
-      <div>
-        <div class="label">Patient Name</div>
-        <div class="value" id="p-name">—</div>
+<div class="wrap">
+  <div class="brand">Verified profile from <b>Ojiva</b></div>
+
+  <div class="hero">
+    <div class="hero-row">
+      <div class="hero-avatar" id="e-initials">—</div>
+      <div style="flex:1">
+        <div class="hero-name" id="e-name">Unknown Patient</div>
+        <div class="hero-sub" id="e-sub"></div>
       </div>
-      <div>
-        <div class="label">Blood Type</div>
-        <div class="blood" id="p-blood">—</div>
-      </div>
-    </div>
-    <div>
-      <div class="label">⚠️ Allergies</div>
-      <div id="p-allergies" style="margin-top:6px"></div>
+      <div class="hero-blood"><small>BLOOD</small><span id="e-blood">—</span></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="label" style="margin-bottom:8px">💊 Current Medications</div>
-    <div id="p-meds"></div>
+  <div class="card alert">
+    <div class="card-label">⚠️ Allergies</div>
+    <div id="e-allergies"><span class="none">None on record</span></div>
   </div>
 
   <div class="card">
-    <div class="label">🆘 Emergency Contact</div>
-    <div class="value" style="margin-top:6px" id="p-ec-name">—</div>
-    <a id="p-ec-call" href="#" class="call-btn">📞 Call Emergency Contact</a>
+    <div class="card-label">🏥 Chronic Conditions</div>
+    <div id="e-conditions"><span class="none">None on record</span></div>
   </div>
 
-  <div class="powered">Powered by <span>Ojiva</span> — cause our people matter.</div>
+  <div class="card">
+    <div class="card-label">💊 Current Medications</div>
+    <div id="e-meds"><span class="none">None on record</span></div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--purple)">
+    <div class="card-label">📞 Emergency Contact</div>
+    <div id="e-contact"><span class="none">Not provided</span></div>
+  </div>
+
+  <div class="card">
+    <div class="grid2">
+      <div><div class="mini-label">Date of Birth</div><div class="mini-val" id="e-dob">—</div></div>
+      <div><div class="mini-label">Gender</div><div class="mini-val" id="e-gender">—</div></div>
+    </div>
+  </div>
+
+  <div class="footer-note">This page was generated from a scanned Ojiva emergency QR code.<br>Information is provided by the patient and may not be complete.</div>
+</div>
 
 <script>
-  // Read URL parameters
-  const params = new URLSearchParams(window.location.search)
+function qp(name){ return new URLSearchParams(window.location.search).get(name) || ''; }
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function fmtDate(d){ if(!d) return '—'; try{ return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return d; } }
 
-  const name     = params.get('name')     || 'Unknown Patient'
-  const blood    = params.get('blood')    || 'Unknown'
-  const allergies = params.get('allergies') || 'None'
-  const meds     = params.get('meds')     || 'None'
-  const ecName   = params.get('ecName')   || 'Not provided'
-  const ecPhone  = params.get('ecPhone')  || ''
+const name = qp('name') || 'Unknown';
+const blood = qp('blood') || '—';
+const dob = qp('dob');
+const gender = qp('gender');
+const allergies = qp('allergies').split(',').map(s=>s.trim()).filter(Boolean);
+const conditions = qp('conditions').split(',').map(s=>s.trim()).filter(Boolean);
+const meds = qp('meds').split(',').map(s=>s.trim()).filter(Boolean);
+const medDoses = qp('medDoses').split(',').map(s=>s.trim()); // optional parallel array "500mg,10mg"
+const ecName = qp('ecName');
+const ecRel = qp('ecRel');
+const ecPhone = qp('ecPhone');
 
-  document.getElementById('p-name').textContent = name
-  document.getElementById('p-blood').textContent = blood
+document.getElementById('e-name').textContent = name;
+document.getElementById('e-initials').textContent = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
+document.getElementById('e-blood').textContent = blood;
+document.getElementById('e-dob').textContent = fmtDate(dob);
+document.getElementById('e-gender').textContent = gender || '—';
 
-  // Allergies
-  const allergyList = allergies.split(',').filter(a => a && a !== 'None')
-  document.getElementById('p-allergies').innerHTML = allergyList.length
-    ? allergyList.map(a => `<span class="tag">⚠️ ${a}</span>`).join('')
-    : '<span style="color:#888;font-size:0.85rem">None on record</span>'
+let subParts = [];
+if(dob){
+  const age = Math.floor((Date.now()-new Date(dob))/31557600000);
+  if(!isNaN(age)) subParts.push(age+' yrs');
+}
+if(gender) subParts.push(gender);
+document.getElementById('e-sub').textContent = subParts.join(' · ');
 
-  // Medications
-  const medList = meds.split(',').filter(m => m && m !== 'None')
-  document.getElementById('p-meds').innerHTML = medList.length
-    ? medList.map(m => `<div style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-weight:600">💊 ${m}</div>`).join('')
-    : '<span style="color:#888;font-size:0.85rem">None on record</span>'
+document.getElementById('e-allergies').innerHTML = allergies.length
+  ? allergies.map(a=>`<span class="tag tag-allergy">⚠️ ${esc(a)}</span>`).join('')
+  : '<span class="none">None on record</span>';
 
-  // Emergency contact
-  document.getElementById('p-ec-name').textContent = ecName
-  if(ecPhone) {
-    document.getElementById('p-ec-call').href = `tel:${ecPhone}`
-    document.getElementById('p-ec-call').textContent = `📞 Call ${ecName} — ${ecPhone}`
-  } else {
-    document.getElementById('p-ec-call').style.display = 'none'
-  }
+document.getElementById('e-conditions').innerHTML = conditions.length
+  ? conditions.map(c=>`<span class="tag tag-cond">${esc(c)}</span>`).join('')
+  : '<span class="none">None on record</span>';
+
+document.getElementById('e-meds').innerHTML = meds.length
+  ? meds.map((m,i)=>`<div class="med-item"><span class="med-name">${esc(m)}</span><span class="med-dose">${esc(medDoses[i]||'')}</span></div>`).join('')
+  : '<span class="none">None on record</span>';
+
+document.getElementById('e-contact').innerHTML = ecName
+  ? `<div class="contact-row">
+      <div class="contact-icon">👤</div>
+      <div>
+        <div class="contact-name">${esc(ecName)}</div>
+        <div class="contact-rel">${esc(ecRel||'')}</div>
+        ${ecPhone ? `<a class="call-btn" href="tel:${esc(ecPhone)}">📞 Call ${esc(ecPhone)}</a>` : ''}
+      </div>
+    </div>`
+  : '<span class="none">Not provided</span>';
 </script>
-
 </body>
 </html>
